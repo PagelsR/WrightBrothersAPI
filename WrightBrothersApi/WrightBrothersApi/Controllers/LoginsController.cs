@@ -19,7 +19,7 @@ public class LoginsController : ControllerBase
     public IActionResult Authenticate(string username, string password)
     {
         // Add fake names for testing
-        if (username == "JohnDoe" && password == "password123")
+        if (username == "JohnDoeX" && password == "password123")
         {
             return Ok();
         }
