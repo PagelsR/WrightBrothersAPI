@@ -44,7 +44,25 @@ public class FlightsController : ControllerBase
             // Arrival at Manteo, NC
             // Flight number WB002
             FlightLogSignature = "171203-DEP-ARR-WB002"
-        }
+        },
+        // Third ever flight of the Wright Brothers
+        new Flight
+        {
+            Id = 3,
+            FlightNumber = "WB003",
+            Origin = "Kitty Hawk, NC",
+            Destination = "Manteo, NC",
+            DepartureTime = new DateTime(1903, 12, 17, 10, 35, 0),
+            ArrivalTime = new DateTime(1903, 12, 17, 10, 35, 0).AddMinutes(12),
+            Status = FlightStatus.Scheduled,
+            // Format: DDMMYY-DEP-ARR-FLIGHT
+            // For this flight
+            // 17th of December 1903
+            // Departure from Kitty Hawk, NC
+            // Arrival at Manteo, NC
+            // Flight number WB003
+            FlightLogSignature = "171203-DEP-ARR-WB003"
+        },
         
     };
 

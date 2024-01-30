@@ -49,5 +49,6 @@ namespace WrightBrothersApi.Tests.Controllers
             var returnedPlane = (Plane)createdAtActionResult.Value!;
             returnedPlane.Should().BeEquivalentTo(newPlane);
         }
+
     }
 }
