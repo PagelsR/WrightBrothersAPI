@@ -12,5 +12,6 @@ namespace WrightBrothersApi.Models
 
         public int RangeInKm { get; set; }
 
+        public string ImageUrl { get; set; }
     }
 }
