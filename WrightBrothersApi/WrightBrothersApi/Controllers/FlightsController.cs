@@ -1,4 +1,7 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 [ApiController]
 [Route("[controller]")]
@@ -8,7 +11,6 @@ public class FlightsController : ControllerBase
 
     private List<Flight> Flights = new List<Flight>
     {
-        // First ever flight of the Wright Brothers
         new Flight
         {
             Id = 1,
@@ -18,6 +20,8 @@ public class FlightsController : ControllerBase
             DepartureTime = new DateTime(1903, 12, 17, 10, 35, 0),
             ArrivalTime = new DateTime(1903, 12, 17, 10, 35, 0).AddMinutes(12),
             Status = FlightStatus.Scheduled,
+            FuelRange = 100,
+            FuelTankLeak = false,
             // Format: DDMMYY-DEP-ARR-FLIGHT
             // For this flight
             // 17th of December 1903
@@ -37,6 +41,8 @@ public class FlightsController : ControllerBase
             DepartureTime = new DateTime(1903, 12, 17, 10, 35, 0),
             ArrivalTime = new DateTime(1903, 12, 17, 10, 35, 0).AddMinutes(12),
             Status = FlightStatus.Scheduled,
+            FuelRange = 100,
+            FuelTankLeak = false,
             // Format: DDMMYY-DEP-ARR-FLIGHT
             // For this flight
             // 17th of December 1903
@@ -44,8 +50,29 @@ public class FlightsController : ControllerBase
             // Arrival at Manteo, NC
             // Flight number WB002
             FlightLogSignature = "171203-DEP-ARR-WB002"
-        }
-        
+        },
+        // This is the first Wright Brothers plane that crashed.
+        new Flight
+        {
+            Id = 3,
+            FlightNumber = "WB003",
+            Origin = "Fort Myer, VA",
+            Destination = "Fort Myer, VA",
+            DepartureTime = new DateTime(1908, 9, 17, 10, 35, 0),
+            ArrivalTime = new DateTime(1908, 9, 17, 10, 35, 0).AddMinutes(12),
+            Status = FlightStatus.Scheduled,
+            FuelRange = 100,
+            // The cause of the crash was NOT a fuel tank leak, but we will pretend it was
+            FuelTankLeak = true,
+            // Format: DDMMYY-DEP-ARR-FLIGHT
+            // For this flight
+            // 17th of September 1908
+            // Departure from Fort Myer, VA
+            // Arrival at Fort Myer, VA
+            // Flight number WB003
+            FlightLogSignature = "170908-DEP-ARR-WB003"
+        },
+
     };
 
     public FlightsController(ILogger<FlightsController> logger)
@@ -53,10 +80,20 @@ public class FlightsController : ControllerBase
         _logger = logger;
     }
 
+    [HttpPost]
+    public ActionResult<Flight> Post(Flight flight)
+    {
+        _logger.LogInformation("POST ✈✈✈ NO PARAMS ✈✈✈");
+
+        Flights.Add(flight);
+
+        return CreatedAtAction(nameof(GetById), new { id = flight.Id }, flight);
+    }
+
     [HttpGet("{id}")]
     public ActionResult<Flight> GetById(int id)
     {
-        _logger.LogInformation($"GET flight with ✈✈✈ Id:{id} ✈✈✈");
+        _logger.LogInformation($"GET ✈✈✈ {id} ✈✈✈");
 
         var flight = Flights.Find(f => f.Id == id);
 
@@ -72,65 +109,144 @@ public class FlightsController : ControllerBase
     public ActionResult UpdateFlightStatus(int id, FlightStatus newStatus)
     {
         var flight = Flights.Find(f => f.Id == id);
-        if (flight == null)
+        if (flight != null)
+        {
+            switch (newStatus)
+            {
+                case FlightStatus.Boarding:
+                    if (DateTime.Now > flight.DepartureTime)
+                    {
+                        return BadRequest("Cannot board, past departure time.");
+                    }
+
+                    break;
+
+                case FlightStatus.Departed:
+                    if (flight.Status != FlightStatus.Boarding)
+                    {
+                        return BadRequest("Flight must be in 'Boarding' status before it can be 'Departed'.");
+                    }
+
+                    break;
+
+                case FlightStatus.InAir:
+                    if (flight.Status != FlightStatus.Departed)
+                    {
+                        return BadRequest("Flight must be in 'Departed' status before it can be 'In Air'.");
+                    }
+                    break;
+
+                case FlightStatus.Landed:
+                    if (flight.Status != FlightStatus.InAir)
+                    {
+                        return BadRequest("Flight must be in 'In Air' status before it can be 'Landed'.");
+                    }
+
+                    break;
+
+                case FlightStatus.Cancelled:
+                    if (DateTime.Now > flight.DepartureTime)
+                    {
+                        return BadRequest("Cannot cancel, past departure time.");
+                    }
+                    break;
+
+                case FlightStatus.Delayed:
+                    if (flight.Status == FlightStatus.Cancelled)
+                    {
+                        return BadRequest("Cannot delay, flight is cancelled.");
+                    }
+                    break;
+
+                default:
+                    // Handle other statuses or unknown status
+                    return BadRequest("Unknown or unsupported flight status.");
+            }
+
+            flight.Status = newStatus;
+
+            return Ok($"Flight status updated to {newStatus}.");
+        }
+        else
         {
             return NotFound("Flight not found.");
         }
+    }
 
-        switch (newStatus)
+
+    [HttpPost("{id}/takeFlight/{flightLength}")]
+    public ActionResult takeFlight(int id, int flightLength)
+    {
+        var flight = Flights.Find(f => f.Id == id);
+
+        for (int i = 0; i < flightLength; i++)
         {
-            case FlightStatus.Boarding:
-                if (DateTime.Now > flight.DepartureTime)
+            if (flight.FuelRange == 0)
+            {
+                throw new Exception("Plane crashed, due to lack of fuel");
+            }
+            else
+            {
+                var fuelConsumption = 0;
+                if (flight.FuelTankLeak)
                 {
-                    return BadRequest("Cannot board, past departure time.");
+                    fuelConsumption = 2;
                 }
 
-                break;
 
-            case FlightStatus.Departed:
-                if (flight.Status != FlightStatus.Boarding)
-                {
-                    return BadRequest("Flight must be in 'Boarding' status before it can be 'Departed'.");
-                }
-
-                break;
-
-            case FlightStatus.InAir:
-                if (flight.Status != FlightStatus.Departed)
-                {
-                    return BadRequest("Flight must be in 'Departed' status before it can be 'In Air'.");
-                }
-                break;
-
-            case FlightStatus.Landed:
-                if (flight.Status != FlightStatus.InAir)
-                {
-                    return BadRequest("Flight must be in 'In Air' status before it can be 'Landed'.");
-                }
-
-                break;
-
-            case FlightStatus.Cancelled:
-                if (DateTime.Now > flight.DepartureTime)
-                {
-                    return BadRequest("Cannot cancel, past departure time.");
-                }
-                break;
-
-            case FlightStatus.Delayed:
-                if (flight.Status == FlightStatus.Cancelled)
-                {
-                    return BadRequest("Cannot delay, flight is cancelled.");
-                }
-                break;
-
-            default:
-                // Handle other statuses or unknown status
-                return BadRequest("Unknown or unsupported flight status.");
+                flight.FuelRange -= fuelConsumption;
+            }
         }
 
-        flight.Status = newStatus;
+        return Ok($"Flight took off and flew {flightLength} kilometers/miles.");
+    }
 
-        return Ok($"Flight status updated to {newStatus}.");
+    [HttpPost("{id}/lightningStrike")]
+    public ActionResult lightningStrike(int id)
+    {
+        // Lightning caused recursion on an inflight instrument
+        lightningStrike(id);
+
+        return Ok($"Recovers from lightning strike.");
+    }
+
+    [HttpPost("{id}/calculateAerodynamics")]
+    public ActionResult calculateAerodynamics(int id)
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        List<int> primes = CalculatePrimes(2, 300000); // Adjust the range to ensure the operation takes about 10 seconds
+
+        stopwatch.Stop();
+        Console.WriteLine($"Found {primes.Count} prime numbers.");
+        Console.WriteLine($"Elapsed Time: {stopwatch.ElapsedMilliseconds / 1000.0} seconds");
+
+        return Ok($"Calculated aerodynamics.");
+    }
+
+    public static List<int> CalculatePrimes(int start, int end)
+    {
+        ConcurrentBag<int> primes = new ConcurrentBag<int>();
+        Parallel.For(start, end + 1, number =>
+        {
+            if (IsPrime(number))
+            {
+                primes.Add(number);
+            }
+        });
+        return primes.ToList();
+    }
+
+    public static bool IsPrime(int number)
+    {
+        if (number <= 1) return false;
+        int boundary = (int)Math.Floor(Math.Sqrt(number));
+
+        for (int i = 2; i <= boundary; i++)  // Efficient check for prime numbers
+        {
+            if (number % i == 0) return false;
+        }
+        return true;
     }
 }
