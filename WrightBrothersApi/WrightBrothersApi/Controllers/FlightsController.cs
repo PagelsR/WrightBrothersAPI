@@ -72,6 +72,25 @@ public class FlightsController : ControllerBase
             // Flight number WB003
             FlightLogSignature = "170908-DEP-ARR-WB003"
         },
+        new Flight
+        {
+            Id = 4,
+            FlightNumber = "WB004",
+            Origin = "Fort Myer, VA",
+            Destination = "Fort Myer, VA",
+            DepartureTime = new DateTime(1908, 9, 17, 10, 35, 0),
+            ArrivalTime = new DateTime(1908, 9, 17, 10, 35, 0).AddMinutes(12),
+            Status = FlightStatus.Scheduled,
+            FuelRange = 100,
+            FuelTankLeak = false,
+            // Format: DDMMYY-DEP-ARR-FLIGHT
+            // For this flight
+            // 17th of September 1908
+            // Departure from Fort Myer, VA
+            // Arrival at Fort Myer, VA
+            // Flight number WB004
+            FlightLogSignature = "170908-DEP-ARR-WB004"
+        }
 
     };
 
