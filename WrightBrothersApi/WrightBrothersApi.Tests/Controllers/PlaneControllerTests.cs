@@ -67,6 +67,47 @@ namespace WrightBrothersApi.Tests.Controllers
             returnedPlane.Should().NotBeNull();
         }
  
+ // Search by name term    | Amount of results | Description
+// Wright Plane 1 | 1                 | Specific search
+// Wright Plane   | 3                 | General search
+// wright plane   | 3                 | Case insensitive
+//  Wright  Plane | 3                 | Extra spaces
+
+        [Fact]
+        public void GetByName_ReturnsPlanes()
+        {
+            // Arrange
+            var name = "Wright Plane";
+
+            // Act
+            var result = _planesController.GetByName(name);
+
+            // Assert
+            var okObjectResult = (OkObjectResult)result.Result!;
+            var returnedPlanes = (List<Plane>)okObjectResult.Value!;
+            returnedPlanes.Should().HaveCount(3);
+        }
+
+        [Fact]
+        public void Put_UpdatesPlane()
+        {
+            // Arrange
+            var id = 1;
+            var updatedPlane = new Plane
+            {
+                Id = id,
+                Name = "Updated Plane",
+                Year = 2022,
+                Description = "An updated plane.",
+                RangeInKm = 1000
+            };
+
+            // Act
+            var result = _planesController.Put(id, updatedPlane);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+        }
 
     }
 }
