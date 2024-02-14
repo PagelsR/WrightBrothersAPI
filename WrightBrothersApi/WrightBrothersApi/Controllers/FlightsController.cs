@@ -52,7 +52,7 @@ public class FlightsController : ControllerBase
             // The cause of the crash was NOT a fuel tank leak, but we will pretend it was
             FuelTankLeak = true,
             FlightLogSignature = "170908-DEP-ARR-WB003"
-        },
+        }
 
     };
 
