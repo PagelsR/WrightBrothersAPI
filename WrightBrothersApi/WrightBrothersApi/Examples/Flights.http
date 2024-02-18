@@ -29,7 +29,7 @@ content-type: application/json
 
 ###
 
-POST http://localhost:1903/flights/3/calculateAerodynamics HTTP/1.1
+POST http://localhost:1903/flights/1/calculateAerodynamics HTTP/1.1
 content-type: application/json
 
 ###

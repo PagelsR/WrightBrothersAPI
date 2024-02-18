@@ -42,7 +42,7 @@ builder.Services.AddHealthChecks()
             Random random = new Random();
             int randomNumber = random.Next(1, 100);
 
-            return randomNumber > 50;
+            return randomNumber > 10;
         }
     });
 
