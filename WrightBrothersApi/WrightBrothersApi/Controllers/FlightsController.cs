@@ -37,6 +37,19 @@ public class FlightsController : ControllerBase
             FuelRange = 100,
             FuelTankLeak = false,
             FlightLogSignature = "171203-DEP-ARR-WB002"
+        },
+        new Flight
+        {
+            Id = 3,
+            FlightNumber = "WB003",
+            Origin = "Kitty Hawk, NC",
+            Destination = "Manteo, NC",
+            DepartureTime = new DateTime(1903, 12, 17, 10, 35, 0),
+            ArrivalTime = new DateTime(1903, 12, 17, 10, 35, 0).AddMinutes(12),
+            Status = FlightStatus.Scheduled,
+            FuelRange = 100,
+            FuelTankLeak = false,
+            FlightLogSignature = "171203-DEP-ARR-WB003"
         }
 
     };

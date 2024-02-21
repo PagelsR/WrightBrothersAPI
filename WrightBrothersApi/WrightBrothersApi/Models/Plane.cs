@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 namespace WrightBrothersApi.Models
 {
     public class Plane
@@ -11,5 +13,7 @@ namespace WrightBrothersApi.Models
         public string Description { get; set; }
 
         public int RangeInKm { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }
