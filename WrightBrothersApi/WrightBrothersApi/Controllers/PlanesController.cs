@@ -22,7 +22,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer",
                 Year = 1903,
                 Description = "The first successful heavier-than-air powered aircraft.",
-                RangeInKm = 12
+                RangeInKm = 12,
+                ImageUrl = "https://example.com/wright-flyer.jpg"
             },
             new Plane
             {
@@ -30,7 +31,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer II",
                 Year = 1904,
                 Description = "A refinement of the original Flyer with better performance.",
-                RangeInKm = 24
+                RangeInKm = 24,
+                ImageUrl = "https://example.com/wright-flyer-ii.jpg"
             },
             new Plane
             {
@@ -38,7 +40,17 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Model A",
                 Year = 1908,
                 Description = "The first commercially successful airplane.",
-                RangeInKm = 40
+                RangeInKm = 40,
+                ImageUrl = "https://example.com/wright-model-a.jpg"
+            },
+            new Plane
+            {
+                Id = 4,
+                Name = "Wright Model B",
+                Year = 1910,
+                Description = "The first airplane to be mass-produced.",
+                RangeInKm = 80,
+                ImageUrl = "https://example.com/wright-model-b.jpg"
             }
         };
 
@@ -66,9 +78,69 @@ namespace WrightBrothersApi.Controllers
         [HttpPost]
         public ActionResult<Plane> Post(Plane plane)
         {
+
+            // Return BadRequest if plane already exists by id
+            if (Planes.Any(p => p.Id == plane.Id))
+            {
+                return BadRequest();
+            }
+
+
             Planes.Add(plane);
+
+            _logger.LogInformation("POST ✈✈✈ {Plane} ✈✈✈", plane.Name);
 
             return CreatedAtAction(nameof(GetById), new { id = plane.Id }, plane);
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Plane plane)
+        {
+            var index = Planes.FindIndex(p => p.Id == id);
+
+            if (index == -1)
+            {
+                return NotFound();
+            }
+
+            Planes[index] = plane;
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var index = Planes.FindIndex(p => p.Id == id);
+
+            if (index == -1)
+            {
+                return NotFound();
+            }
+
+            Planes.RemoveAt(index);
+
+            return NoContent();
+        }
+
+        [HttpGet("count/{count}")]
+        public ActionResult<List<Plane>> GetByCount(int count)
+        {
+            var planes = Planes.Take(count).ToList();
+
+            _logger.LogInformation("GET by count ✈✈✈ {Count} ✈✈✈", count);
+
+            return Ok(planes);
+        }
+
+        // get method by year
+        [HttpGet("year/{year}")]
+        public ActionResult<List<Plane>> GetByYear(int year)
+        {
+            var planes = Planes.Where(p => p.Year == year).ToList();
+
+            return Ok(planes);
+        }
+
     }
 }
