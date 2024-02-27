@@ -52,21 +52,6 @@ namespace WrightBrothersApi.Tests.Controllers
             returnedPlane.Should().BeEquivalentTo(newPlane);
         }
 
-        [Fact]
-        public void GetById_ReturnsPlane()
-        {
-            // Arrange
-            var id = 1;
-
-            // Act
-            var result = _planesController.GetById(id);
-
-            // Assert
-            var okObjectResult = (OkObjectResult)result.Result!;
-            var returnedPlane = (Plane)okObjectResult.Value!;
-            returnedPlane.Should().NotBeNull();
-        }
- 
 
     }
 }

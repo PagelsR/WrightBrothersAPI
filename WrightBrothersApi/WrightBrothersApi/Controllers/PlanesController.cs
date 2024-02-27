@@ -22,7 +22,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer",
                 Year = 1903,
                 Description = "The first successful heavier-than-air powered aircraft.",
-                RangeInKm = 12
+                RangeInKm = 12,
+                ImageUrl = "https://example.com/wright-flyer.jpg"
             },
             new Plane
             {
@@ -30,7 +31,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer II",
                 Year = 1904,
                 Description = "A refinement of the original Flyer with better performance.",
-                RangeInKm = 24
+                RangeInKm = 24,
+                ImageUrl = "https://example.com/wright-flyer-ii.jpg"
             },
             new Plane
             {
@@ -38,8 +40,19 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Model A",
                 Year = 1908,
                 Description = "The first commercially successful airplane.",
-                RangeInKm = 40
+                RangeInKm = 40,
+                ImageUrl = "https://example.com/wright-model-a.jpg"
+            },
+            new Plane
+            {
+                Id = 4,
+                Name = "Wright Model B",
+                Year = 1910,
+                Description = "A two-seat biplane used for training.",
+                RangeInKm = 80,
+                ImageUrl = "https://example.com/wright-model-b.jpg"
             }
+
         };
 
         [HttpGet]
@@ -70,5 +83,6 @@ namespace WrightBrothersApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = plane.Id }, plane);
         }
+
     }
 }
