@@ -67,6 +67,25 @@ namespace WrightBrothersApi.Tests.Controllers
             returnedPlane.Should().NotBeNull();
         }
  
+        [Fact]
+        public void Put_UpdatesPlaneAndReturnsNoContent()
+        {
+            // Arrange
+            var id = 1;
+            var updatedPlane = new Plane
+            {
+                Id = 1,
+                Name = "Updated Wright Flyer",
+                Year = 1903,
+                Description = "The first successful heavier-than-air powered aircraft.",
+                RangeInKm = 12
+            };
 
+            // Act
+            var result = _planesController.Put(id, updatedPlane);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+        }
     }
 }
