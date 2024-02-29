@@ -67,6 +67,49 @@ namespace WrightBrothersApi.Tests.Controllers
             returnedPlane.Should().NotBeNull();
         }
  
+        [Fact]
+        public void Put_UpdatesPlane()
+        {
+            // Arrange
+            var id = 1;
+            var updatedPlane = new Plane
+            {
+                Id = 1,
+                Name = "Updated Plane",
+                Year = 2022,
+                Description = "An updated plane.",
+                RangeInKm = 1000
+            };
+
+            // Act
+            var result = _planesController.Put(id, updatedPlane);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public void Put_ReturnsNotFound_WhenPlaneDoesNotExist()
+        {
+            // Arrange
+            var id = 3;
+            var updatedPlane = new Plane
+            {
+                Id = 3,
+                Name = "Updated Plane",
+                Year = 2022,
+                Description = "An updated plane.",
+                RangeInKm = 1000
+            };
+
+            // Act
+            var result = _planesController.Put(id, updatedPlane);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        
 
     }
 }
