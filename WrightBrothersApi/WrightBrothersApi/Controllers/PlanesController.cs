@@ -39,6 +39,14 @@ namespace WrightBrothersApi.Controllers
                 Year = 1908,
                 Description = "The first commercially successful airplane.",
                 RangeInKm = 40
+            },
+            new Plane
+            {
+                Id = 4,
+                Name = "Wright Model B",
+                Year = 1910,
+                Description = "The first aircraft with a passenger seat.",
+                RangeInKm = 80
             }
         };
 
