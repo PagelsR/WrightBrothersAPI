@@ -8,4 +8,6 @@ Just as the Wright Brothers revolutionized travel by mastering the skies, GitHub
 
 As you become more proficient with GitHub Copilot, you'll find it's not just an assistant but a co-creator, propelling your projects forward with the speed and precision that would make the Wright Brothers proud. This project is your runway to mastering this AI-powered tool, helping you soar to new heights in your coding endeavors.
 
+Hello!
+
 ### Welcome aboard, and let's take flight into the future of coding! &#9992;
