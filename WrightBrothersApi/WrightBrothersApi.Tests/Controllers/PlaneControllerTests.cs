@@ -66,7 +66,41 @@ namespace WrightBrothersApi.Tests.Controllers
             var returnedPlane = (Plane)okObjectResult.Value!;
             returnedPlane.Should().NotBeNull();
         }
+
+        [Fact]
+        public void GetById_ReturnsNotFound()
+        {
+            // Arrange
+            var id = 5;
+
+            // Act
+            var result = _planesController.GetById(id);
+
+            // Assert
+            result.Result.Should().BeOfType<NotFoundResult>();
+        }
  
+ // Search by name term using SearchByName | Amount of results | Test Description
+// Wright Flyer II      | 1                 | Specific search
+// Wright               | 3                 | General search
+// wright flyer         | 2                 | Case insensitive
+//  Wright  flyer       | 2                 | Extra spaces
+
+        [Theory]
+        [InlineData("Wright Flyer II", 1, "Specific search")]
+        [InlineData("Wright", 3, "General search")]
+        [InlineData("wright flyer", 2, "Case insensitive")]
+        [InlineData(" Wright  flyer ", 2, "Extra spaces")]
+        public void SearchByName_ReturnsPlanes(string name, int expectedCount, string description)
+        {
+            // Act
+            var result = _planesController.SearchByName(name);
+
+            // Assert
+            var okObjectResult = (OkObjectResult)result.Result!;
+            var returnedPlanes = (List<Plane>)okObjectResult.Value!;
+            returnedPlanes.Should().HaveCount(expectedCount, description);
+        }
 
     }
 }
