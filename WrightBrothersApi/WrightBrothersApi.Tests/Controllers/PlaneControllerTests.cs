@@ -66,7 +66,69 @@ namespace WrightBrothersApi.Tests.Controllers
             var returnedPlane = (Plane)okObjectResult.Value!;
             returnedPlane.Should().NotBeNull();
         }
+
+        [Fact]
+        public void GetById_ReturnsNotFound()
+        {
+            // Arrange
+            var id = 100;
+
+            // Act
+            var result = _planesController.GetById(id);
+
+            // Assert
+            result.Result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public void GetById_ReturnsBadRequest()
+        {
+            // Arrange
+            var id = -1;
+
+            // Act
+            var result = _planesController.GetById(id);
+
+            // Assert
+            result.Result.Should().BeOfType<BadRequestResult>();
+        }
+
+// Search by name term using SearchByName | Amount of results | Test Description
+// Wright Flyer II      | 1                 | Specific search
+// Wright               | 3                 | General search
+// wright flyer         | 2                 | Case insensitive
+//  Wright  flyer       | 2                 | Extra spaces
  
+        [Theory]
+        [InlineData("Wright Flyer II", 1)]
+        [InlineData("Wright", 3)]
+        [InlineData("wright flyer", 2)]
+        [InlineData(" Wright  flyer ", 2)]
+        public void SearchByName_ReturnsPlanes(string name, int expectedCount)
+        {
+            // Act
+            var result = _planesController.SearchByName(name);
+
+            // Assert
+            var okObjectResult = (OkObjectResult)result.Result!;
+            var returnedPlanes = (List<Plane>)okObjectResult.Value!;
+            returnedPlanes.Should().HaveCount(expectedCount);
+        }
+
+        [Fact]
+        public void Delete_RemovesPlaneAndReturnsNoContent()
+        {
+            // Arrange
+            var existingPlane = new Plane { Id = 1 };
+            _planesController.Planes.Add(existingPlane);
+
+            // Act
+            var result = _planesController.Delete(1);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+            _planesController.Planes.Should().NotContain(existingPlane);
+        }
 
     }
 }
