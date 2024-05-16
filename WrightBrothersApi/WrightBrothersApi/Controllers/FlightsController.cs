@@ -166,12 +166,12 @@ public class FlightsController : ControllerBase
 
         return Ok($"Flight took off and flew {flightLength} kilometers/miles.");
     }
-
+    
     [HttpPost("{id}/lightningStrike")]
     public ActionResult lightningStrike(int id)
     {
-        // Lightning caused recursion on an inflight instrument
-        lightningStrike(id);
+        // Removed the recursive call
+        // lightningStrike(id);
 
         return Ok($"Recovers from lightning strike.");
     }
@@ -182,7 +182,7 @@ public class FlightsController : ControllerBase
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        List<int> primes = CalculatePrimes(2, 300000); // Adjust the range to ensure the operation takes about 10 seconds
+        List<int> primes = CalculatePrimes(2, 300000);
 
         stopwatch.Stop();
         Console.WriteLine($"Found {primes.Count} prime numbers.");
@@ -193,15 +193,15 @@ public class FlightsController : ControllerBase
 
     public static List<int> CalculatePrimes(int start, int end)
     {
-        ConcurrentBag<int> primes = new ConcurrentBag<int>();
-        Parallel.For(start, end + 1, number =>
+        List<int> primes = new List<int>();
+        for (int number = start; number <= end; number++)
         {
             if (IsPrime(number))
             {
                 primes.Add(number);
             }
-        });
-        return primes.ToList();
+        }
+        return primes;
     }
 
     public static bool IsPrime(int number)
@@ -209,10 +209,9 @@ public class FlightsController : ControllerBase
         if (number <= 1) return false;
         int boundary = (int)Math.Floor(Math.Sqrt(number));
 
-        for (int i = 2; i <= boundary; i++)  // Efficient check for prime numbers
+        for (int i = 2; i <= boundary; i++)  // Only check up to the square root of number
         {
             if (number % i == 0) return false;
         }
         return true;
-    }
-}
+    }}

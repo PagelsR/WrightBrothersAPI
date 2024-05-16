@@ -22,7 +22,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer",
                 Year = 1903,
                 Description = "The first successful heavier-than-air powered aircraft.",
-                RangeInKm = 12
+                RangeInKm = 12,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/8/8d/Wright_Flyer.jpg"
             },
             new Plane
             {
@@ -30,7 +31,8 @@ namespace WrightBrothersApi.Controllers
                 Name = "Wright Flyer II",
                 Year = 1904,
                 Description = "A refinement of the original Flyer with better performance.",
-                RangeInKm = 24
+                RangeInKm = 24,
+                ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/7/7b/Wright_Flyer_II.jpg"
             },
             new Plane
             {
@@ -70,5 +72,41 @@ namespace WrightBrothersApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = plane.Id }, plane);
         }
+
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, Plane plane)
+        {
+            var existingPlane = Planes.Find(p => p.Id == id);
+
+            if (existingPlane == null)
+            {
+                return NotFound();
+            }
+
+            existingPlane.Name = plane.Name;
+            existingPlane.Year = plane.Year;
+            existingPlane.Description = plane.Description;
+            existingPlane.RangeInKm = plane.RangeInKm;
+            existingPlane.ImageUrl = plane.ImageUrl;
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            var existingPlane = Planes.Find(p => p.Id == id);
+
+            if (existingPlane == null)
+            {
+                return NotFound();
+            }
+
+            Planes.Remove(existingPlane);
+
+            return NoContent();
+        }
+
+        
     }
 }
