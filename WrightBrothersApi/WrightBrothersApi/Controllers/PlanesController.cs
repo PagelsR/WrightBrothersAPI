@@ -39,6 +39,14 @@ namespace WrightBrothersApi.Controllers
                 Year = 1908,
                 Description = "The first commercially successful airplane.",
                 RangeInKm = 40
+            },
+            new Plane
+            {
+                Id = 4,
+                Name = "Wright Model B",
+                Year = 1910,
+                Description = "The first airplane to be used in military service.",
+                RangeInKm = 80
             }
         };
 
@@ -75,6 +83,39 @@ namespace WrightBrothersApi.Controllers
             Planes.Add(plane);
 
             return CreatedAtAction(nameof(GetById), new { id = plane.Id }, plane);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, Plane plane)
+        {
+            var existingPlane = Planes.Find(p => p.Id == id);
+
+            if (existingPlane == null)
+            {
+                return NotFound();
+            }
+
+            existingPlane.Name = plane.Name;
+            existingPlane.Year = plane.Year;
+            existingPlane.Description = plane.Description;
+            existingPlane.RangeInKm = plane.RangeInKm;
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            var plane = Planes.Find(p => p.Id == id);
+
+            if (plane == null)
+            {
+                return NotFound();
+            }
+
+            Planes.Remove(plane);
+
+            return NoContent();
         }
 
         
