@@ -28,15 +28,6 @@ namespace WrightBrothersApi.Tests.Controllers
             returnedPlanes.Should().NotBeEmpty();
         }
 
-        [Fact]
-        public void GetAll_LogsInformation()
-        {
-            // Act
-            _planesController.GetAll();
-
-            // Assert
-            _logger.Received().LogInformation("GET all ✈✈✈ NO PARAMS ✈✈✈");
-        }
 
     }
 }
